@@ -1,0 +1,26 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e ".[dev]"
+      - run: ruff check longtailfox-seo-geo-audit/src tests longtailfox-seo-geo-audit/scripts scripts
+      - run: pytest
+      - name: Validate Skill
+        run: python scripts/validate_skill.py longtailfox-seo-geo-audit
+        env:
+          PYTHONUTF8: "1"

@@ -1,0 +1,9 @@
+interface:
+  display_name: "长尾狐 SEO/GEO 审计"
+  short_description: "生成品牌化中文网站 SEO/GEO 深度审计与打印报告"
+  icon_small: "../assets/longtailfox-icon.jpg"
+  icon_large: "../assets/longtailfox-lockup.png"
+  brand_color: "#F58232"
+  default_prompt: "使用 $longtailfox-seo-geo-audit 审计这个网站并生成中文 HTML/PDF 报告。"
+policy:
+  allow_implicit_invocation: true

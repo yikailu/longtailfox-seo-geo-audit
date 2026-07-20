@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ domain }} SEO/GEO 审计报告｜长尾狐</title>
+  <style>
+    :root {
+      --orange: #f58232;
+      --orange-dark: #d65f12;
+      --ink: #1f2937;
+      --muted: #667085;
+      --line: #e5e7eb;
+      --soft: #f8fafc;
+      --pass: #067647;
+      --pass-bg: #ecfdf3;
+      --warn: #b54708;
+      --warn-bg: #fffaeb;
+      --fail: #b42318;
+      --fail-bg: #fef3f2;
+      --info: #175cd3;
+      --info-bg: #eff8ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef1f5;
+      font: 14px/1.65 "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC",
+        -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    a { color: var(--orange-dark); text-decoration: none; }
+    .page { width: min(1120px, calc(100% - 32px)); margin: 24px auto 48px; }
+    .hero {
+      color: white;
+      padding: 30px 34px;
+      border-radius: 18px 18px 0 0;
+      background: linear-gradient(135deg, #1c2029 0%, #303845 65%, #663115 100%);
+    }
+    .brand { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand img { width: 184px; height: auto; background: white; border-radius: 12px; padding: 7px; }
+    .eyebrow { color: #ffc08f; font-weight: 700; letter-spacing: .08em; }
+    h1 { margin: 10px 0 6px; font-size: 30px; line-height: 1.25; }
+    .hero p { margin: 0; color: #d6dae1; overflow-wrap: anywhere; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .meta span { padding: 5px 9px; border: 1px solid #ffffff2c; border-radius: 999px; color: #e8eaee; }
+    main { background: white; padding: 28px 34px 38px; }
+    section { margin: 0 0 28px; break-inside: avoid-page; }
+    h2 { margin: 0 0 13px; font-size: 20px; border-left: 4px solid var(--orange); padding-left: 10px; }
+    h3 { margin: 0 0 8px; font-size: 15px; }
+    .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .score-card { border: 1px solid var(--line); border-radius: 14px; padding: 18px; background: var(--soft); }
+    .score-card strong { display: block; font-size: 36px; line-height: 1.1; margin: 5px 0; }
+    .score-card small { color: var(--muted); }
+    .summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 14px; }
+    .summary div { text-align: center; border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+    .summary strong { display: block; font-size: 22px; }
+    .coverage-note { margin: 12px 0 0; padding: 10px 12px; border-radius: 9px; background: var(--info-bg); color: var(--info); }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th, td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; overflow-wrap: anywhere; }
+    th { background: var(--soft); font-size: 12px; color: var(--muted); }
+    th:nth-child(1) { width: 19%; }
+    th:nth-child(2) { width: 11%; }
+    th:nth-child(3) { width: 33%; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .status-pass { color: var(--pass); background: var(--pass-bg); }
+    .status-warn { color: var(--warn); background: var(--warn-bg); }
+    .status-fail, .status-error { color: var(--fail); background: var(--fail-bg); }
+    .status-info, .status-unverified { color: var(--info); background: var(--info-bg); }
+    .evidence { margin: 0; padding-left: 17px; }
+    .recommendation { margin-top: 5px; color: var(--orange-dark); }
+    .priority-list { margin: 0; padding: 0; list-style: none; counter-reset: priority; }
+    .priority-list li {
+      counter-increment: priority;
+      position: relative;
+      margin: 0 0 10px;
+      padding: 13px 14px 13px 52px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      break-inside: avoid;
+    }
+    .priority-list li::before {
+      content: counter(priority);
+      position: absolute; left: 14px; top: 12px;
+      width: 25px; height: 25px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--orange); color: white; font-weight: 800;
+    }
+    .page-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+    .page-item { padding: 11px; border: 1px solid var(--line); border-radius: 10px; overflow-wrap: anywhere; }
+    .page-item small { display: block; color: var(--muted); }
+    .inventory th:nth-child(1) { width: 18%; }
+    .inventory th:nth-child(2) { width: 14%; }
+    .inventory th:nth-child(3) { width: 20%; }
+    .limitations { background: var(--soft); border-radius: 12px; padding: 14px 18px; }
+    .cta {
+      display: flex; justify-content: space-between; align-items: center; gap: 22px;
+      padding: 20px; border-radius: 14px;
+      color: white; background: linear-gradient(135deg, #f58232, #d65f12);
+      break-inside: avoid;
+    }
+    .cta h2 { border: 0; padding: 0; margin: 0 0 3px; }
+    .cta a { display: inline-block; padding: 9px 14px; background: white; color: #b84b08; border-radius: 9px; font-weight: 800; white-space: nowrap; }
+    footer { padding: 18px 34px; border-radius: 0 0 18px 18px; background: #1c2029; color: #c7ccd4; text-align: center; }
+    @page { size: A4; margin: 12mm 10mm 14mm; }
+    @media print {
+      body { background: white; font-size: 10.5px; }
+      .page { width: 100%; margin: 0; }
+      .hero, main, footer { border-radius: 0; }
+      .hero { padding: 18px 20px; }
+      main { padding: 18px 20px 10px; }
+      section { margin-bottom: 18px; }
+      h1 { font-size: 23px; }
+      h2 { font-size: 16px; }
+      .score-card strong { font-size: 27px; }
+      .cta { padding: 14px 16px; margin-bottom: 10px; }
+      footer { padding: 10px 20px; font-size: 9px; line-height: 1.45; }
+      table, tr, td, th, .score-card, .page-item { break-inside: avoid; }
+      a { color: inherit; }
+    }
+    @media (max-width: 720px) {
+      .page { width: 100%; margin: 0; }
+      .hero, main, footer { border-radius: 0; padding-left: 18px; padding-right: 18px; }
+      .brand { align-items: flex-start; flex-direction: column-reverse; }
+      .score-grid, .summary, .page-list { grid-template-columns: 1fr; }
+      .table-wrap { overflow-x: auto; }
+      table { min-width: 760px; }
+      .cta { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <div class="brand">
+      <div>
+        <div class="eyebrow">LONGTAIL FOX · SEO/GEO AUDIT</div>
+        <h1>{{ domain }} 网站审计报告</h1>
+        <p>{{ result.final_url or result.requested_url }}</p>
+      </div>
+      <img src="{{ logo_data_uri }}" alt="长尾狐 Longtail Fox">
+    </div>
+    <div class="meta">
+      <span>生成时间 {{ result.generated_at[:19].replace("T", " ") }} UTC</span>
+      <span>引擎 v{{ result.engine_version }}</span>
+      <span>规则 v{{ result.rubric_version }}</span>
+      <span>抽样 {{ result.audited_pages|length }} 页</span>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>审计总览</h2>
+      <div class="score-grid">
+        <div class="score-card">
+          <small>SEO 就绪度</small>
+          <strong>{{ result.seo_score if result.seo_score is not none else "—" }}</strong>
+          <small>基于已验证 SEO 证据</small>
+        </div>
+        <div class="score-card">
+          <small>GEO 就绪度</small>
+          <strong>{{ result.geo_score if result.geo_score is not none else "—" }}</strong>
+          <small>AI 搜索发现、理解与引用准备</small>
+        </div>
+        <div class="score-card">
+          <small>证据覆盖率</small>
+          <strong>{{ result.evidence_coverage }}%</strong>
+          <small>未验证项不会被当作失败</small>
+        </div>
+      </div>
+      <div class="summary">
+        <div><strong>{{ counts.pass }}</strong>通过</div>
+        <div><strong>{{ counts.warn }}</strong>警告</div>
+        <div><strong>{{ counts.fail }}</strong>失败</div>
+        <div><strong>{{ counts.unverified }}</strong>未验证</div>
+        <div><strong>{{ counts.error }}</strong>执行错误</div>
+      </div>
+      {% if result.evidence_coverage < 60 %}
+      <p class="coverage-note">本次证据覆盖率低于 60%，请先补齐未验证数据再做重大决策。</p>
+      {% endif %}
+    </section>
+
+    <section>
+      <h2>优先行动</h2>
+      {% if priorities %}
+      <ol class="priority-list">
+        {% for item in priorities %}
+        <li>
+          <strong>{{ item.name }}</strong>
+          <span class="badge status-{{ item.status }}">{{ status_labels[item.status] }}</span><br>
+          {{ item.recommendation }}
+          {% if item.url %}<small> · {{ item.url }}</small>{% endif %}
+        </li>
+        {% endfor %}
+      </ol>
+      {% else %}
+      <p>当前已验证范围内没有需要优先处理的项目。</p>
+      {% endif %}
+    </section>
+
+    {% if result.sitemap_inventory %}
+    <section>
+      <h2>Sitemap 页面资产地图</h2>
+      <div class="table-wrap">
+        <table class="inventory">
+          <thead><tr><th>目录</th><th>URL 数量</th><th>页面类型</th><th>示例 URL</th></tr></thead>
+          <tbody>
+          {% for row in result.sitemap_inventory[:20] %}
+            <tr>
+              <td>{{ row.directory }}</td>
+              <td>{{ row.url_count }}</td>
+              <td>{{ row.page_type }}</td>
+              <td>{{ row.example_url }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    {% endif %}
+
+    <section>
+      <h2>抽样页面</h2>
+      <div class="page-list">
+      {% for page in result.audited_pages %}
+        <div class="page-item">
+          <strong>{{ page.title or page.page_type }}</strong>
+          <small>{{ page.final_url }}</small>
+          <small>HTTP {{ page.status_code or "—" }} · {{ page.language or "语言未声明" }} · {{ page.page_type }}</small>
+        </div>
+      {% endfor %}
+      </div>
+    </section>
+
+    {% for section, checks in grouped.items() %}
+    <section>
+      <h2>{{ section }}</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>检查项</th><th>状态</th><th>证据</th><th>影响与建议</th></tr></thead>
+          <tbody>
+          {% for item in checks %}
+            <tr>
+              <td><strong>{{ item.name }}</strong><br><small>{{ item.dimension|upper }} · {{ item.check_id }}</small></td>
+              <td><span class="badge status-{{ item.status }}">{{ status_labels[item.status] }}</span></td>
+              <td>
+                <ul class="evidence">
+                {% for evidence in item.evidence %}<li>{{ evidence }}</li>{% endfor %}
+                </ul>
+                {% if item.url %}<small>{{ item.url }}</small>{% endif %}
+              </td>
+              <td>
+                {{ item.impact }}
+                {% if item.recommendation %}<div class="recommendation"><strong>建议：</strong>{{ item.recommendation }}</div>{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    {% endfor %}
+
+    <section>
+      <h2>审计边界</h2>
+      <div class="limitations">
+        <ul>
+        {% for item in result.limitations %}<li>{{ item }}</li>{% endfor %}
+        {% for item in result.errors %}<li>执行记录：{{ item }}</li>{% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div>
+        <h2>把审计建议变成持续增长资产</h2>
+        <div>长尾狐提供内容规划、多语言写作、站内优化、外链匹配与效果追踪。</div>
+      </div>
+      <a href="https://longtailfox.com/">访问 longtailfox.com</a>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 长尾狐 Longtail Fox · <a href="https://longtailfox.com/">longtailfox.com</a><br>
+    本报告提供可验证的公开信号分析，不构成排名、收录或 AI 引用保证。
+  </footer>
+</div>
+</body>
+</html>
