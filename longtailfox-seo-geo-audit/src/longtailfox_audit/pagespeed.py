@@ -22,13 +22,13 @@ def pagespeed_check(url: str, api_key: str | None) -> CheckResult:
         )
     try:
         response = requests.get(
-            "https://www.googleapis.com/pagespeedonline/v5/runPagespeed",
+            "https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed",
             params={
                 "url": url,
                 "strategy": "mobile",
                 "category": ["performance", "accessibility", "best-practices", "seo"],
-                "key": api_key,
             },
+            headers={"x-goog-api-key": api_key},
             timeout=180,
         )
         response.raise_for_status()
