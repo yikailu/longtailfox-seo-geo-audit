@@ -2,7 +2,7 @@
   <img src="longtailfox-seo-geo-audit/assets/longtailfox-lockup.png" alt="长尾狐 Longtail Fox" width="280">
 </p>
 
-# 长尾狐 SEO/GEO 网站审计
+# 长尾狐网站SEO/GEO专业审计
 
 输入一个公开网站地址，生成中文 SEO/GEO 审计报告。报告包含结构化 JSON、独立 HTML，并可在本机安装 Chrome 或 Chromium 后输出 PDF。
 
