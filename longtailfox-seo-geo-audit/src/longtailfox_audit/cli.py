@@ -3,17 +3,11 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from urllib.parse import urlsplit
 
 from .audit import run_audit
 from .pdf import render_pdf
-from .report import render_html, write_json
+from .report import render_html, report_basename, write_json
 from .security import UnsafeUrlError
-
-
-def _slug(url: str) -> str:
-    host = urlsplit(url).netloc.lower().replace(".", "-").replace(":", "-")
-    return host or "website"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -44,7 +38,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     output_dir = Path(args.output_dir)
-    name = f"{_slug(result.final_url or result.requested_url)}-seo-geo-audit"
+    name = report_basename(result)
     json_path = write_json(result, output_dir / f"{name}.json")
     html_path = render_html(result, output_dir / f"{name}.html")
     print(f"JSON: {json_path}")
