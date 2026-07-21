@@ -37,9 +37,11 @@ python longtailfox-seo-geo-audit/scripts/run-audit.py https://example.com
 
 默认最多抽样 8 个代表页面，并在 `reports/` 目录生成：
 
-- `<域名>-seo-geo-audit.json`
-- `<域名>-seo-geo-audit.html`
-- `<域名>-seo-geo-audit.pdf`（需要 Chrome 或 Chromium）
+- `longtailfox-seo-geo-audit-<域名>-<UTC时间>.json`
+- `longtailfox-seo-geo-audit-<域名>-<UTC时间>.html`
+- `longtailfox-seo-geo-audit-<域名>-<UTC时间>.pdf`（需要 Chrome 或 Chromium）
+
+文件名只使用 ASCII 字符。例如：`longtailfox-seo-geo-audit-example-com-20260721-063045Z.pdf`。
 
 常用参数：
 

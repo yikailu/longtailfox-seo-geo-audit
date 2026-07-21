@@ -36,9 +36,9 @@ python scripts/run-audit.py "https://example.com" --max-pages 8
 
 默认输出：
 
-- `reports/<hostname>-seo-geo-audit.json`
-- `reports/<hostname>-seo-geo-audit.html`
-- 浏览器可用时：`reports/<hostname>-seo-geo-audit.pdf`
+- `reports/longtailfox-seo-geo-audit-<hostname>-<UTC时间>.json`
+- `reports/longtailfox-seo-geo-audit-<hostname>-<UTC时间>.html`
+- 浏览器可用时：`reports/longtailfox-seo-geo-audit-<hostname>-<UTC时间>.pdf`
 
 需要自定义输出目录时使用 `--output-dir`。需要禁用 PDF 时使用 `--no-pdf`。PageSpeed Key 可通过 `--pagespeed-api-key`、`PAGESPEED_API_KEY` 或 `GOOGLE_PAGESPEED_API_KEY` 提供。
 

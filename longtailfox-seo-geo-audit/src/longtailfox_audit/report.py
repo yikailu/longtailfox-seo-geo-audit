@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import base64
 import json
+import re
 from collections import Counter, defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -28,6 +30,25 @@ def _logo_data_uri() -> str:
     logo = ASSET_DIR / "longtailfox-lockup.png"
     encoded = base64.b64encode(logo.read_bytes()).decode("ascii")
     return f"data:image/png;base64,{encoded}"
+
+
+def report_basename(result: AuditResult) -> str:
+    """Return one portable ASCII basename for JSON, HTML, and PDF artifacts."""
+    url = result.final_url or result.requested_url
+    host = urlsplit(url).hostname or "website"
+    try:
+        host = host.encode("idna").decode("ascii")
+    except UnicodeError:
+        host = "website"
+    safe_host = re.sub(r"[^a-z0-9-]+", "-", host.lower()).strip("-") or "website"
+    try:
+        generated_at = datetime.fromisoformat(result.generated_at.replace("Z", "+00:00"))
+    except ValueError:
+        generated_at = datetime.now(timezone.utc)
+    if generated_at.tzinfo is None:
+        generated_at = generated_at.replace(tzinfo=timezone.utc)
+    timestamp = generated_at.astimezone(timezone.utc).strftime("%Y%m%d-%H%M%SZ")
+    return f"longtailfox-seo-geo-audit-{safe_host}-{timestamp}"
 
 
 def _priority(checks: list[CheckResult]) -> list[CheckResult]:
